@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <link rel="stylesheet" type="text/css" href="/public/css/style.css">
+    <script type="text/javascript" src="/node_modules/jquery/dist/jquery.js"></script>
+    <script>
+        $(document).ready(function(){
+            if($("#userid").val()!=""){
+                $("#userpw").focus();
+            } else {
+                $("#userid").focus();
+            }
+        });
+
+        function keyDown(obj, event){
+            if(event.keyCode==13){
+                if(obj==document.getElementById("userid")){
+                    $("#userpw").focus();
+                } else if(obj==document.getElementById("userpw")){
+                    if(chkForm(obj)) goLogin();
+                }
+            }
+        }
+
+        function chkForm(obj){
+            if(obj==document.getElementById("userid")){
+                if(obj.value==""){
+                    alert("아이디를 입력하여 주세요."); 
+                    obj.focus();
+                    return false;	
+                }
+                return true;
+            } else if(obj==document.getElementById("userpw")){
+                if(obj.value==""){
+                    alert("패스워드를 입력하여 주세요."); 
+                    obj.focus();
+                    return false;	
+                }
+                return true;
+            }
+        }
+
+        function goLogin(){
+            if(!chkForm($("#userid")[0])) return false;
+            if(!chkForm($("#userpw")[0])) return false;
+            
+            var userid = $("#userid")[0].value;
+            var userpw = $("#userpw")[0].value;
+            
+            $.ajax({
+                type : 'post',
+                url : '/admin/login',
+                data : {userid : userid, pwcode : userpw},
+                dataType : 'json',
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",  
+                success: function(result) { 
+                    alert(result); 
+                }
+            })
+        }
+
+    </script>
+  </head>
+  <body>
+    <form name="form_admin" method="post" action="/admin/login">
+        <div id="login_wrap">
+            <div style="height: 150px;"></div>
+            <div style="margin-bottom: 30px; text-align: center; color: orangered; font-size: 18px;">Member Login</div>
+
+		    <div id="login">
+			    <div id="login_text_box">
+                    <table border="0" cellspacing="0", cellpadding="0">
+                        <tr>
+                            <td height="38" valign="top" style="padding-top:2px;">
+                                <input type="text" name="userid", id="userid" class="login_text" tabindex="1" maxlength="15" onkeydown="keyDown(this, event);"/>
+                            </td>
+                            <td width="93" rowspan="2" align="right">
+                                <img src="/public/images/login/login_btn.jpg" onclick="goLogin();" style="cursor:pointer;"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-bottom:2px;">
+                                <input type="password" name="userpw", id="userpw" class="login_text" tabindex="2" maxlength="20" onkeydown="keyDown(this, event);" style="margin:0"/>
+                            </td>
+                        </tr>          
+                    </table>
+                </div>
+            </div>
+        </div>    
+    </form>
+  </body>
+</html>
